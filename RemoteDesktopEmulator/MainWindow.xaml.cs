@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,6 +22,17 @@ namespace RemoteDesktopEmulator
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		[DllImport("user32.dll")]
+		private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+
+		[DllImport("user32.dll")]
+		private static extern bool IsIconic(IntPtr hWnd);
+
+		[DllImport("user32.dll")]
+		private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+		const int swRestore = 9;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -40,23 +52,47 @@ namespace RemoteDesktopEmulator
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			if (!UacHelper.IsProcessElevated)
+			Process[] allProcesses = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);
+            if (allProcesses.Length > 1)
 			{
-				MessageBoxResult result = MessageBox.Show(string.Format(
-					@"I need to be run as an administrator to show my capabilities.{0}{1}Restart as admin?", Environment.NewLine, Environment.NewLine),
-					"Remote Desktop Emulator", MessageBoxButton.YesNo);
-				
-				switch (result)
+				foreach (Process p in allProcesses)
 				{
-					case MessageBoxResult.Yes:
-						RestartAsAdmin();
+					if (p.Id != Process.GetCurrentProcess().Id)
+					{
+						IntPtr hWnd = allProcesses[1].MainWindowHandle;
 
-						break;
+						if (IsIconic(hWnd))
+						{
+							ShowWindowAsync(hWnd, swRestore);
+						}
 
-					case MessageBoxResult.No:
-						this.Close();
+						// bring it to the foreground
+						SetForegroundWindow(hWnd);
+					}
+				}
 
-						break;
+				this.Close();
+			}
+			else
+			{
+				if (!UacHelper.IsProcessElevated)
+				{
+					MessageBoxResult result = MessageBox.Show(string.Format(
+						@"I need to be run as an administrator to show my capabilities.{0}{1}Restart as admin?", Environment.NewLine, Environment.NewLine),
+						"Remote Desktop Emulator", MessageBoxButton.YesNo);
+
+					switch (result)
+					{
+						case MessageBoxResult.Yes:
+							RestartAsAdmin();
+
+							break;
+
+						case MessageBoxResult.No:
+							this.Close();
+
+							break;
+					}
 				}
 			}
 		}
@@ -77,6 +113,11 @@ namespace RemoteDesktopEmulator
 			int monitors = (int)combo.SelectedValue;
 
 			this.Model.SetNumberOfMonitors(monitors);
+		}
+
+		private void Window_Closed(object sender, EventArgs e)
+		{
+			RegistryUtils.CleanupRegistry();
 		}
 	}
 }
