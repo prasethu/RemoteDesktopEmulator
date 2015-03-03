@@ -77,22 +77,7 @@ namespace RemoteDesktopEmulator
 			{
 				if (!UacHelper.IsProcessElevated)
 				{
-					MessageBoxResult result = MessageBox.Show(string.Format(
-						@"I need to be run as an administrator to show my capabilities.{0}{1}Restart as admin?", Environment.NewLine, Environment.NewLine),
-						"Remote Desktop Emulator", MessageBoxButton.YesNo);
-
-					switch (result)
-					{
-						case MessageBoxResult.Yes:
-							RestartAsAdmin();
-
-							break;
-
-						case MessageBoxResult.No:
-							this.Close();
-
-							break;
-					}
+					RestartAsAdmin();
 				}
 			}
 		}
