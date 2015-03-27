@@ -136,6 +136,7 @@ namespace RemoteDesktopEmulator
 
 			Process mstsc = new Process();
 			mstsc.StartInfo.FileName = "mstsc";
+			mstsc.StartInfo.Arguments = "/multimon";
 			mstsc.Start();
 		}
 	}
