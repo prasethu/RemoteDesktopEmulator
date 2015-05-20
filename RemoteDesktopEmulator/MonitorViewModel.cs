@@ -120,6 +120,7 @@ namespace RemoteDesktopEmulator
 		private ObservableCollection<int> _dpiScalingFactors = new ObservableCollection<int>()
 		{
 			100,
+            125,
 			150,
 			200,
 			250,
