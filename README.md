@@ -12,3 +12,4 @@ Here's a link to the tool: https://github.com/prasethu/RemoteDesktopEmulator/rel
 When you are done using the tool, close it and your original remote desktop session will be restored.
 
 ![Screenshot](https://github.com/prasethu/RemoteDesktopEmulator/blob/master/Screenshot.png)
+![Screenshot2](https://github.com/prasethu/RemoteDesktopEmulator/blob/master/Screenshot2.png)

@@ -1,103 +1,421 @@
 ﻿<Window x:Class="RemoteDesktopEmulator.MainWindow"
+        x:ClassModifier="internal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RemoteDesktopEmulator"
-        mc:Ignorable="d"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Height="500"
+        Icon="Properties\RemoteDesktop.ico"
+        MinWidth="700"
+        ResizeMode="NoResize"
+        SizeToContent="Width"
+        SnapsToDevicePixels="True"
         Title="Remote Desktop Emulator"
-		Height="550"
-		Width="625"
-		ResizeMode="CanResizeWithGrip"
-		WindowState="Maximized"
-		Closed="Window_Closed">
+        UseLayoutRounding="True"
+        WindowStartupLocation="CenterScreen"
+        Closing="WindowClosing">
+  <Window.Resources>
+    <ResourceDictionary>
 
-	<Window.Resources>
-		<DataTemplate x:Key="MonitorTemplate">
-			<local:Monitor />
-		</DataTemplate>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="StyleDictionary.xaml" />
+      </ResourceDictionary.MergedDictionaries>
 
-		<Style TargetType="{x:Type Button}">
-			<Setter Property="Height" Value="25" />
-			<Setter Property="Width" Value="68" />
-			<Setter Property="Margin" Value="5" />
+      <sys:Double x:Key="ResolutionScaleFactor">0.046875</sys:Double>
+      <sys:Double x:Key="ToolTipResolutionScaleFactor">0.0234375</sys:Double>
 
-		</Style>
-		
-		<Style TargetType="{x:Type ComboBox}">
-			<Setter Property="Width" Value="100" />
-		</Style>
+      <SolidColorBrush x:Key="DisplayBlue" Color="#FF0078D7" />
 
-	</Window.Resources>
-	
-	<Grid DockPanel.Dock="Top">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="auto"></RowDefinition>
-			<RowDefinition Height="*"></RowDefinition>
-			<RowDefinition Height="auto"></RowDefinition>
-			<RowDefinition Height="auto"></RowDefinition>
-		</Grid.RowDefinitions>
+      <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+      <local:MultiplicationConverter x:Key="MultiplicationConverter" />
 
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="auto" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		
-		<StackPanel Grid.Row="0"
-					Grid.Column="0"
-					Orientation="Horizontal"
-					Margin="10, 15, 0, 0">
-			<Label FontSize="16" Foreground="Purple">Select number of monitors:</Label>
+      <GeometryGroup x:Key="SavePath">
+        <PathGeometry Figures="M 0,0 L 12,0 14,2 14,14 0,14 z" />
+        <RectangleGeometry Rect="4,0,6,5" />
+        <RectangleGeometry Rect="7,1,2,3" />
+      </GeometryGroup>
 
-			<ComboBox ItemsSource="{Binding TotalMonitors}" 
-					  SelectedIndex="0" 
-					  SelectionChanged="ComboBox_SelectionChanged"
-					  FontWeight="Bold"
-					  FontSize="16"
-					  HorizontalAlignment="Center"
-					  HorizontalContentAlignment="Center">
-			</ComboBox>
+      <GeometryGroup x:Key="SettingsPath" FillRule="Nonzero">
+        <CombinedGeometry GeometryCombineMode="Xor">
+          <CombinedGeometry.Geometry1>
+            <EllipseGeometry Center="7,7" RadiusX="5" RadiusY="5" />
+          </CombinedGeometry.Geometry1>
+          <CombinedGeometry.Geometry2>
+            <EllipseGeometry Center="7,7" RadiusX="2" RadiusY="2" />
+          </CombinedGeometry.Geometry2>
+        </CombinedGeometry>
+        <RectangleGeometry RadiusX="0.5" RadiusY="0.5" Rect="0,5,3,4">
+          <RectangleGeometry.Transform>
+            <TransformGroup>
+              <RotateTransform Angle="-30" CenterX="7" CenterY="7" />
+            </TransformGroup>
+          </RectangleGeometry.Transform>
+        </RectangleGeometry>
+        <RectangleGeometry RadiusX="0.5" RadiusY="0.5" Rect="0,5,3,4">
+          <RectangleGeometry.Transform>
+            <TransformGroup>
+              <RotateTransform Angle="30" CenterX="7" CenterY="7" />
+            </TransformGroup>
+          </RectangleGeometry.Transform>
+        </RectangleGeometry>
+        <RectangleGeometry RadiusX="0.5" RadiusY="0.5" Rect="5,0,4,3" />
+        <RectangleGeometry RadiusX="0.5" RadiusY="0.5" Rect="11,5,3,4">
+          <RectangleGeometry.Transform>
+            <TransformGroup>
+              <RotateTransform Angle="-30" CenterX="7" CenterY="7" />
+            </TransformGroup>
+          </RectangleGeometry.Transform>
+        </RectangleGeometry>
+        <RectangleGeometry RadiusX="0.5" RadiusY="0.5" Rect="11,5,3,4">
+          <RectangleGeometry.Transform>
+            <TransformGroup>
+              <RotateTransform Angle="30" CenterX="7" CenterY="7" />
+            </TransformGroup>
+          </RectangleGeometry.Transform>
+        </RectangleGeometry>
+        <RectangleGeometry RadiusX="0.5" RadiusY="0.5" Rect="5,11,4,3" />
+      </GeometryGroup>
 
-		</StackPanel>
+      <Style x:Key="ConfigurationsListStyle" TargetType="ListView">
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="ListView">
+              <Border Background="Transparent">
+                <ItemsPresenter />
+              </Border>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
 
-		<Grid Grid.Row="1"
-			  Grid.Column="0"
-		      Grid.ColumnSpan="2">
+      <Style x:Key="ConfigurationTabStyle" TargetType="ListViewItem">
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="ListViewItem">
+              <Border x:Name="Border"
+                      Background="Transparent"
+                      BorderThickness="0,1">
+                <ContentPresenter DataContext="{TemplateBinding DataContext}" />
+              </Border>
+              <ControlTemplate.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter TargetName="Border" Property="Background" Value="White" />
+                  <Setter TargetName="Border" Property="BorderBrush" Value="Gray" />
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+          <Trigger Property="IsSelected" Value="True">
+            <Setter Property="Margin" Value="0,0,-1,0" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
 
-			<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
-				<ItemsControl ItemTemplate="{StaticResource MonitorTemplate}"
-						      ItemsSource="{Binding Monitors}"
-							  HorizontalAlignment="Center">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<StackPanel Orientation="Horizontal"/>
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-				</ItemsControl>
-			</ScrollViewer>
+      <DataTemplate x:Key="DisplayTemplate">
+        <Grid x:Name="DisplayGrid"
+              Background="White"
+              Margin="5">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <Border Grid.Row="0"
+                  Background="Transparent"
+                  Height="115"
+                  Width="180">
+            <Rectangle Fill="{StaticResource DisplayBlue}"
+                       Height="{Binding Resolution.Height, Converter={StaticResource MultiplicationConverter}, ConverterParameter={StaticResource ResolutionScaleFactor}}"
+                       Stroke="Black"
+                       StrokeThickness="2"
+                       Width="{Binding Resolution.Width, Converter={StaticResource MultiplicationConverter}, ConverterParameter={StaticResource ResolutionScaleFactor}}" />
+          </Border>
+          <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0"
+                       Grid.Row="0"
+                       Margin="8,8,8,4"
+                       Text="Resolution:"
+                       VerticalAlignment="Center" />
+            <ComboBox Grid.Column="1"
+                      Grid.Row="0"
+                      ItemsSource="{Binding DataContext.Settings.AvailableResolutions, RelativeSource={RelativeSource AncestorType=Window}}"
+                      Margin="8,8,8,4"
+                      SelectedItem="{Binding Resolution}"
+                      Style="{StaticResource ComboBoxStyle}"
+                      VerticalAlignment="Center"
+                      Width="100"
+                      SelectionChanged="DisplayComboBoxSelectionChanged" />
+            <TextBlock Grid.Column="0"
+                       Grid.Row="1"
+                       Margin="8,4"
+                       Text="Scale:"
+                       VerticalAlignment="Center" />
+            <ComboBox Grid.Column="1"
+                      Grid.Row="1"
+                      ItemsSource="{Binding DataContext.Settings.AvailableScales, RelativeSource={RelativeSource AncestorType=Window}}"
+                      Margin="8,4"
+                      SelectedItem="{Binding Scale}"
+                      Style="{StaticResource ComboBoxStyle}"
+                      VerticalAlignment="Center"
+                      Width="100"
+                      SelectionChanged="DisplayComboBoxSelectionChanged" />
+            <TextBlock Grid.Column="0"
+                       Grid.Row="2"
+                       Margin="8,7,8,4"
+                       Text="Primary:"
+                       VerticalAlignment="Center" />
+            <RadioButton Grid.Column="1"
+                         Grid.Row="2"
+                         GroupName="PrimaryDisplayGroup"
+                         HorizontalAlignment="Left"
+                         IsChecked="{Binding IsPrimary}"
+                         IsEnabled="{Binding DataContext.CanChangePrimary, ElementName=DisplaysList}"
+                         Margin="8,8,8,4"
+                         Style="{StaticResource RadioButtonStyle}"
+                         VerticalAlignment="Center" />
+            <Button x:Name="RemoveDisplay"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="3"
+                    Content="{StaticResource RemovePath}"
+                    HorizontalAlignment="Center"
+                    IsEnabled="{Binding DataContext.CanRemoveDisplay, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                    Margin="8,24,8,0"
+                    Style="{StaticResource RoundedGlyphButton}"
+                    ToolTip="Remove Display"
+                    Visibility="Hidden"
+                    Width="36"
+                    Click="RemoveDisplayButtonClick" />
+          </Grid>
+        </Grid>
+        <DataTemplate.Triggers>
+          <Trigger SourceName="DisplayGrid" Property="IsMouseOver" Value="True">
+            <Setter TargetName="RemoveDisplay" Property="Visibility" Value="Visible" />
+          </Trigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
 
-		</Grid>
+      <DataTemplate x:Key="ConfigurationTabToolTipTemplate">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <Border Grid.Row="0"
+                  Background="Transparent"
+                  Height="52"
+                  Width="90">
+            <Rectangle Fill="{StaticResource DisplayBlue}"
+                       Height="{Binding Resolution.Height, Converter={StaticResource MultiplicationConverter}, ConverterParameter={StaticResource ToolTipResolutionScaleFactor}}"
+                       Stroke="Black"
+                       StrokeThickness="2"
+                       Width="{Binding Resolution.Width, Converter={StaticResource MultiplicationConverter}, ConverterParameter={StaticResource ToolTipResolutionScaleFactor}}" />
+          </Border>
+          <Grid Grid.Row="1"
+                HorizontalAlignment="Center">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" SharedSizeGroup="NameColumnGroup" />
+              <ColumnDefinition Width="Auto" SharedSizeGroup="ValueColumnGroup" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" SharedSizeGroup="ResolutionRowGroup" />
+              <RowDefinition Height="Auto" SharedSizeGroup="ScaleRowGroup" />
+              <RowDefinition Height="Auto" SharedSizeGroup="PrimaryRowGroup" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0"
+                       Grid.Row="0"
+                       Text="R:" />
+            <TextBlock Grid.Column="1"
+                       Grid.Row="0"
+                       Text="{Binding Resolution}" />
+            <TextBlock Grid.Column="0"
+                       Grid.Row="1"
+                       Text="S:" />
+            <TextBlock Grid.Column="1"
+                       Grid.Row="1"
+                       Text="{Binding Scale}" />
+            <TextBlock Grid.ColumnSpan="2"
+                       Grid.Row="2"
+                       Text="Primary"
+                       Visibility="{Binding IsPrimary, Converter={StaticResource BooleanToVisibilityConverter}}" />
+          </Grid>
+        </Grid>
+      </DataTemplate>
 
-		<StackPanel Grid.Row="2"
-					Grid.ColumnSpan="2"
-					HorizontalAlignment="Right"
-					Orientation="Horizontal"
-					Margin="0, 0, 15, 15">
-			<Button Command="{Binding ConnectCommand}"
-					CommandParameter="{Binding Monitors}"
-					ToolTip="Connect to Remote Desktop">Connect</Button>
-			<!--<Button Command="{Binding ResetCommand}" ToolTip="Reset to default settings">Reset</Button>-->
-		</StackPanel>
+      <DataTemplate x:Key="ConfigurationTabTemplate">
+        <Border Background="Transparent"
+                Padding="4,10"
+                ToolTipService.InitialShowDelay="750">
+          <Border.ToolTip>
+            <ToolTip>
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0"
+                           Margin="0,0,0,4"
+                           MaxWidth="360"
+                           Text="{Binding Name}"
+                           TextWrapping="Wrap" />
+                <ItemsControl Grid.Row="1"
+                              Grid.IsSharedSizeScope="True"
+                              ItemsSource="{Binding Displays}"
+                              ItemTemplate="{StaticResource ConfigurationTabToolTipTemplate}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                </ItemsControl>
+              </Grid>
+            </ToolTip>
+          </Border.ToolTip>
+          <TextBlock DockPanel.Dock="Top"
+                     Text="{Binding Name}"
+                     TextTrimming="CharacterEllipsis" />
+        </Border>
+      </DataTemplate>
 
-		<StatusBar Grid.Row="3" 
-				   HorizontalAlignment="Stretch"
-				   Grid.ColumnSpan="2"
-				   Background="Purple">
-			<StatusBarItem>
-				<TextBlock Foreground="White"><Run FontWeight="Bold">Note:</Run> DPI changes require the user to sign out of the remote session and sign back in.</TextBlock>
-			</StatusBarItem>
-		</StatusBar>
+      <DataTemplate x:Key="ConfigurationTemplate">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+          <DockPanel Grid.Row="0"
+                     LastChildFill="False">
+            <TextBox DockPanel.Dock="Left"
+                     BorderThickness="0"
+                     FontSize="20"
+                     FontWeight="Medium"
+                     IsReadOnly="True"
+                     Margin="10,2"
+                     MaxLength="64"
+                     MaxWidth="720"
+                     MinWidth="200"
+                     Text="{Binding Name, NotifyOnValidationError=True, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"
+                     TextWrapping="Wrap"
+                     VerticalAlignment="Center"
+                     KeyDown="ConfigurationNameTextBoxKeyDown"
+                     MouseDoubleClick="ConfigurationNameTextBoxMouseDoubleClick"
+                     LostFocus="ConfigurationNameTextBoxLostFocus"
+                     Validation.Error="ValidationError" />
+            <Button DockPanel.Dock="Right"
+                    Content="{StaticResource RemovePath}"
+                    IsEnabled="{Binding DataContext.CanRemoveConfiguration, RelativeSource={RelativeSource AncestorType=Window}}"
+                    Style="{StaticResource RoundedGlyphButton}"
+                    ToolTip="Remove Configuration"
+                    VerticalAlignment="Top"
+                    Width="36"
+                    Click="RemoveConfigurationButtonClick" />
+          </DockPanel>
+          <StackPanel Grid.Row="1"
+                      HorizontalAlignment="Center"
+                      Margin="4,0"
+                      Orientation="Horizontal"
+                      VerticalAlignment="Center">
+            <ItemsControl x:Name="DisplaysList"
+                          BorderThickness="0"
+                          ItemsSource="{Binding Displays}"
+                          ItemTemplate="{StaticResource DisplayTemplate}"
+                          ScrollViewer.CanContentScroll="False">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+            </ItemsControl>
+            <Button Content="{StaticResource AddPath}"
+                    Height="36"
+                    Style="{StaticResource RoundedGlyphButton}"
+                    Visibility="{Binding CanAddDisplay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Width="24"
+                    ToolTip="Add Display"
+                    Click="AddDisplayButtonClick" />
+          </StackPanel>
+        </Grid>
+      </DataTemplate>
 
-	</Grid>
+    </ResourceDictionary>
+  </Window.Resources>
+  <Grid>
 
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Border Grid.Column="0"
+            Background="{StaticResource BackgroundLightGray}"
+            BorderBrush="Gray"
+            BorderThickness="0,0,1,0"
+            MaxWidth="180"
+            MinWidth="120">
+      <StackPanel Orientation="Vertical"
+                  VerticalAlignment="Center">
+        <ListView x:Name="ConfigurationsList"
+                  Background="Transparent"
+                  BorderThickness="0"
+                  ItemContainerStyle="{StaticResource ConfigurationTabStyle}"
+                  ItemsSource="{Binding Configurations}"
+                  ItemTemplate="{StaticResource ConfigurationTabTemplate}"
+                  SelectedIndex="{Binding SelectedIndex}"
+                  ScrollViewer.CanContentScroll="False"
+                  Style="{StaticResource ConfigurationsListStyle}" />
+        <Button Content="{StaticResource AddPath}"
+                Style="{StaticResource RoundedGlyphButton}"
+                ToolTip="Add Configuration"
+                Visibility="{Binding CanAddConfiguration, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Width="36"
+                Click="AddConfigurationButtonClick" />
+      </StackPanel>
+    </Border>
+
+    <Border Grid.Column="1"
+            Background="Transparent">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <ContentPresenter Grid.Row="0"
+                          Content="{Binding SelectedItem, ElementName=ConfigurationsList}"
+                          ContentTemplate="{StaticResource ConfigurationTemplate}" />
+        <DockPanel Grid.Row="1"
+                   LastChildFill="False">
+          <Button DockPanel.Dock="Left"
+                  Content="{StaticResource SettingsPath}"
+                  Style="{StaticResource RoundedGlyphButton}"
+                  ToolTip="Settings"
+                  Width="36"
+                  Click="SettingsButtonClick" />
+          <Button DockPanel.Dock="Left"
+                  Content="{StaticResource SavePath}"
+                  IsEnabled="{Binding HasError, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource InverseBooleanConverter}}"
+                  Style="{StaticResource RoundedGlyphButton}"
+                  ToolTip="Save Configurations"
+                  Width="36"
+                  Click="SaveConfigurationsButtonClick" />
+          <Button DockPanel.Dock="Right"
+                  Content="Connect"
+                  Style="{StaticResource RoundedTextButton}"
+                  ToolTip="Connect to Remote Desktop"
+                  Width="96"
+                  Click="RemoteConnectButtonClick" />
+        </DockPanel>
+      </Grid>
+    </Border>
+
+  </Grid>
 </Window>
