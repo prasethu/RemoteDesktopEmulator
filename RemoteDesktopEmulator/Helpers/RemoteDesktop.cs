@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -46,9 +47,9 @@ namespace RemoteDesktopEmulator
                 tscKey.SetValue(MCSKey, 1);
                 tscKey.CreateSubKey(@"Default\AddIns\RDPDR");
 
-                int left = 0;
-                int top = 0;
-                int right = 0;
+                int left   = GetInitialLeft(configuration.Displays);
+                int top    = 0;
+                int right  = 0;
                 int bottom = 0;
 
                 for (int ii = 0; ii < configuration.Displays.Count; ii++)
@@ -57,7 +58,7 @@ namespace RemoteDesktopEmulator
                     Resolution resolution = display.Resolution;
 
                     right = left + resolution.Width - 1;
-                    bottom = resolution.Height - 1;
+                    bottom = top + resolution.Height - 1;
 
                     using (RegistryKey monitorsKey = tscKey.CreateSubKey(MonitorKey))
                     using (RegistryKey monitorKey = monitorsKey.CreateSubKey(ii.ToString()))
@@ -80,6 +81,23 @@ namespace RemoteDesktopEmulator
             }
 
             StartRemoteDesktopProcess();
+        }
+
+        private static int GetInitialLeft(IList<Display> displays)
+        {
+            if (displays == null)
+                return 0;
+
+            int calculatedLeft = 0;
+            foreach (Display display in displays)
+            {
+                if (!display.IsPrimary)
+                    calculatedLeft += display.Resolution.Width;
+                else
+                    break;
+            }
+
+            return -calculatedLeft;
         }
 
         private static void StartRemoteDesktopProcess()
