@@ -23,6 +23,14 @@ namespace RemoteDesktopEmulator
         public MainWindow()
         {
             InitializeComponent();
+
+            if (Settings.UpgradeRequired)
+            {
+                Settings.Upgrade();
+                Settings.UpgradeRequired = false;
+                Settings.Save();
+            }
+
             DataContext = Serializer.Deserialize(Settings.Data);
         }
 

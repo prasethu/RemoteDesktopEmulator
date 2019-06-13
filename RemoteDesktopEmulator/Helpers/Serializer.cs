@@ -19,12 +19,10 @@ namespace RemoteDesktopEmulator
 
             Queue<string> queue = new Queue<string>(data.Split(Separator));
 
-            int version;
-            if (!TryParseInt32(queue, out version) || (version != Version))
+            if (!TryParseInt32(queue, out int version) || (version != Version))
                 return fallbackModel;
 
-            Model model;
-            if (!TryParseModel(queue, out model))
+            if (!TryParseModel(queue, out Model model))
                 return fallbackModel;
 
             return model;
@@ -144,16 +142,14 @@ namespace RemoteDesktopEmulator
         {
             configuration = Configuration.CreateDefault();
 
-            int displaysCount;
-            if (!TryParseInt32(queue, out displaysCount))
+            if (!TryParseInt32(queue, out int displaysCount))
                 return false;
 
             HashSet<Display> displays = new HashSet<Display>();
 
-            Display display;
             for (int ii = 0; ii < displaysCount; ii++)
             {
-                if (TryParseDisplay(queue, out display))
+                if (TryParseDisplay(queue, out Display display))
                     displays.Add(display);
             }
 
@@ -171,16 +167,13 @@ namespace RemoteDesktopEmulator
         {
             display = Display.CreateDefault();
 
-            bool isPrimary;
-            if (!TryParseBoolean(queue, out isPrimary))
+            if (!TryParseBoolean(queue, out bool isPrimary))
                 return false;
 
-            Resolution resolution;
-            if (!TryParseResolution(queue, out resolution))
+            if (!TryParseResolution(queue, out Resolution resolution))
                 return false;
 
-            Scale scale;
-            if (!TryParseScale(queue, out scale))
+            if (!TryParseScale(queue, out Scale scale))
                 return false;
 
             display = Display.Create(isPrimary, resolution, scale);
@@ -197,28 +190,24 @@ namespace RemoteDesktopEmulator
         {
             model = Model.CreateDefault();
 
-            int selectedIndex;
-            if (!TryParseInt32(queue, out selectedIndex))
+            if (!TryParseInt32(queue, out int selectedIndex))
                 return false;
 
-            int configurationsCount;
-            if (!TryParseInt32(queue, out configurationsCount))
+            if (!TryParseInt32(queue, out int configurationsCount))
                 return false;
 
             HashSet<Configuration> configurations = new HashSet<Configuration>();
 
-            Configuration configuration;
             for (int ii = 0; ii < configurationsCount; ii++)
             {
-                if (TryParseConfiguration(queue, out configuration))
+                if (TryParseConfiguration(queue, out Configuration configuration))
                     configurations.Add(configuration);
             }
 
             if (configurations.Count != configurationsCount)
                 return false;
 
-            Settings settings;
-            if (!TryParseSettings(queue, out settings))
+            if (!TryParseSettings(queue, out Settings settings))
                 return false;
 
             model = Model.Create(configurations.ToList(), selectedIndex, settings);
@@ -230,12 +219,10 @@ namespace RemoteDesktopEmulator
         {
             resolution = Resolution.CreateDefault();
 
-            int height;
-            if (!TryParseInt32(queue, out height))
+            if (!TryParseInt32(queue, out int height))
                 return false;
 
-            int width;
-            if (!TryParseInt32(queue, out width))
+            if (!TryParseInt32(queue, out int width))
                 return false;
 
             resolution = Resolution.Create(width, height);
@@ -247,8 +234,7 @@ namespace RemoteDesktopEmulator
         {
             scale = Scale.CreateDefault();
 
-            int value;
-            if (!TryParseInt32(queue, out value))
+            if (!TryParseInt32(queue, out int value))
                 return false;
 
             scale = Scale.Create(value);
@@ -260,32 +246,28 @@ namespace RemoteDesktopEmulator
         {
             settings = Settings.CreateDefault();
 
-            int resolutionsCount;
-            if (!TryParseInt32(queue, out resolutionsCount))
+            if (!TryParseInt32(queue, out int resolutionsCount))
                 return false;
 
             HashSet<Resolution> resolutions = new HashSet<Resolution>();
 
-            Resolution resolution;
             for (int ii = 0; ii < resolutionsCount; ii++)
             {
-                if (TryParseResolution(queue, out resolution))
+                if (TryParseResolution(queue, out Resolution resolution))
                     resolutions.Add(resolution);
             }
 
             if (resolutions.Count != resolutionsCount)
                 return false;
 
-            int scalesCount;
-            if (!TryParseInt32(queue, out scalesCount))
+            if (!TryParseInt32(queue, out int scalesCount))
                 return false;
 
             HashSet<Scale> scales = new HashSet<Scale>();
 
-            Scale scale;
             for (int ii = 0; ii < scalesCount; ii++)
             {
-                if (TryParseScale(queue, out scale))
+                if (TryParseScale(queue, out Scale scale))
                     scales.Add(scale);
             }
 
