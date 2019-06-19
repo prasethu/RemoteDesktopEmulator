@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22610.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteDesktopEmulator", "RemoteDesktopEmulator\RemoteDesktopEmulator.csproj", "{BC67159A-81DF-4A96-B87B-0C974FC0E448}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteDesktopEmulator", "RemoteDesktopEmulator\RemoteDesktopEmulator.csproj", "{CEF1181C-3E9D-4DFA-AB4D-4A277F382652}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BC67159A-81DF-4A96-B87B-0C974FC0E448}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC67159A-81DF-4A96-B87B-0C974FC0E448}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC67159A-81DF-4A96-B87B-0C974FC0E448}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC67159A-81DF-4A96-B87B-0C974FC0E448}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEF1181C-3E9D-4DFA-AB4D-4A277F382652}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEF1181C-3E9D-4DFA-AB4D-4A277F382652}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEF1181C-3E9D-4DFA-AB4D-4A277F382652}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEF1181C-3E9D-4DFA-AB4D-4A277F382652}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
